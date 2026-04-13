@@ -1,5 +1,5 @@
 
-// PIC only
+// PIC only**
 
 #ifndef USPF_H
 #define USPF_H
@@ -9,8 +9,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#pragma pack(push)
+#pragma pack(1)
+
 #define NAME_LEN  (32)
 #define MAGIC_LEN (5) // \x7fUSPF
+
+#define VERSION (0x100000000000) // four digits per segment (Major.Minor.Patch)
 
 typedef uint64_t SECTION;
 typedef uint64_t SYMBOL;
@@ -29,7 +34,7 @@ typedef enum
 } _MACHINE;
 
 // Primary Program Header
-typedef struct __attribute__((__packed__))
+typedef struct
 {
         uint8_t         Magic[MAGIC_LEN];
         uint64_t        Version;
@@ -59,7 +64,7 @@ typedef enum
         SECTION_TYPE_BSS, // bss has no data but it has size, set to zero before jumping
 } _SECTIONTYPE;
 
-typedef struct __attribute__((__packed__))
+typedef struct
 {
         uint8_t         Name[NAME_LEN];
         SECTIONTYPE     Type;
@@ -68,7 +73,7 @@ typedef struct __attribute__((__packed__))
         // encrypted Data would Follow
 } USPFSectionHeader;
 
-typedef struct __attribute__((__packed__))
+typedef struct
 {
         uint8_t         Length;
         uint8_t         Name[];
@@ -82,12 +87,28 @@ typedef enum
         RELOC_REL,
 } _RELOCTYPE;
 
-typedef struct __attribute__((__packed__))
+typedef struct
 {
         SECTION         Section;
         RELOCTYPE       Type;
         SYMBOL          Symbol;
         uint64_t        OffsetOrAbs;
 } USPFRelocation;
+
+#pragma pack(pop)
+
+typedef struct
+{
+        USPFSectionHeader  Header;
+        void              *Data;
+} USPFSection;
+
+typedef struct
+{
+        USPFProgramHeader  Program;
+        USPFSection       *Sections;
+} USPFImage;
+
+USPFImage USPFLoadImage(const char *const Path, const char *const Password);
 
 #endif
