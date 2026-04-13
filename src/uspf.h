@@ -15,7 +15,9 @@
 typedef uint64_t SECTION;
 typedef uint64_t SYMBOL;
 
-typedef enum : uint16_t
+typedef uint16_t MACHINE;
+
+typedef enum
 {
         MACHINE_NONE,
         MACHINE_IA_32,
@@ -24,7 +26,7 @@ typedef enum : uint16_t
         MACHINE_ARM_64,
         MACHINE_RV_32,
         MACHINE_RV_64,
-} MACHINE;
+} _MACHINE;
 
 // Primary Program Header
 typedef struct __attribute__((__packed__))
@@ -45,7 +47,9 @@ typedef struct __attribute__((__packed__))
         // Sections then follow
 } USPFProgramHeader;
 
-typedef enum : uint8_t
+typedef uint8_t SECTIONTYPE;
+
+typedef enum
 {
         SECTION_TYPE_RELOCATION,
         SECTION_TYPE_SYMBOLTABLE,
@@ -53,7 +57,7 @@ typedef enum : uint8_t
         SECTION_TYPE_RODATA,
         SECTION_TYPE_RWDATA,
         SECTION_TYPE_BSS, // bss has no data but it has size, set to zero before jumping
-} SECTIONTYPE;
+} _SECTIONTYPE;
 
 typedef struct __attribute__((__packed__))
 {
