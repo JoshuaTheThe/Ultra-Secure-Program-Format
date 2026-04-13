@@ -15,7 +15,7 @@
 #define NAME_LEN  (32)
 #define MAGIC_LEN (5) // \x7fUSPF
 
-#define VERSION (0x100000000000) // four digits per segment (Major.Minor.Patch)
+#define VERSION (0x000100000000) // four digits per segment (Major.Minor.Patch)
 
 typedef uint64_t SECTION;
 typedef uint64_t SYMBOL;
@@ -45,10 +45,10 @@ typedef struct
         SECTION         TextSectionIndex;
         SECTION         SymbolSectionIndex;
         SYMBOL          EntrySymbolIndex;
-        uint64_t        IntegrityCheck;  // =MAGIC_LEN+Version*1024+SectionCount-Machine+RelocationSectionIndex-TextSectionIndex+SymbolSectionIndex*sizeof_file
         uint8_t         PasswordSHA[32]; // image is protected with this
         uint8_t         SignSHA[64];     // image must have a valid sign
         uint8_t         ImageSHA[32];    // image must be valid
+        uint8_t         Padding[41];
         // Sections then follow
 } USPFProgramHeader;
 
@@ -107,6 +107,8 @@ typedef struct
 {
         USPFProgramHeader  Program;
         USPFSection       *Sections;
+        void             (*Main)(int argc, char **argv);
+        void             (*AfterMain)(void);
 } USPFImage;
 
 USPFImage USPFLoadImage(const char *const Path, const char *const Password);
