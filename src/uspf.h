@@ -74,11 +74,20 @@ typedef struct __attribute__((__packed__))
         uint8_t         Name[];
 } USPFSymbol;
 
+typedef uint8_t RELOCTYPE;
+
+typedef enum
+{
+        RELOC_ABS,
+        RELOC_REL,
+} _RELOCTYPE;
+
 typedef struct __attribute__((__packed__))
 {
         SECTION         Section;
+        RELOCTYPE       Type;
         SYMBOL          Symbol;
-        uint64_t        Offset;
+        uint64_t        OffsetOrAbs;
 } USPFRelocation;
 
 #endif
